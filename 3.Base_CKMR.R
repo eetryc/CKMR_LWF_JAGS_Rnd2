@@ -128,7 +128,7 @@ cat("model{
         group_by(year_index,across(all_of(group_vars_POP))) %>%
         dplyr::summarise(
           Pair_viable_count_per_agedif = n(),                   
-          TruePairs = sum(true_pair, na.rm=TRUE),
+          TruePairs = sum(TruePairs, na.rm=TRUE),
           .groups = "drop"
         ) %>%
         arrange(Cohort_2) 
@@ -164,7 +164,7 @@ cat("model{
   inits_POP = function() {
     list(
       # surv = runif(1,0.01, 0.99),
-      Nadult = (runif(years, min = 100, max = 2000)))
+      Nadult = (runif(years, min = 100, max = 1000000)))
   }
   
   
@@ -177,7 +177,7 @@ cat("model{
   n.cores = 3
   
   ### Run  ================================================================####
-  Out_CKMR_sim1_POP = jagsUI::jags(data_POP, 
+  Out_CKMR_1.1 = jagsUI::jags(data_POP, 
                                  inits_POP,
                                  params, 
                                  "HSPPOPsingleY.jags", 
@@ -191,7 +191,7 @@ cat("model{
   
   ### Plot and compare ===================================================####
   # Extract posterior summary as a data frame
-  nhat_POP <- as.data.frame(Out_CKMR_sim1_POP$summary)
+  nhat_POP <- as.data.frame(Out_CKMR_1.1$summary)
   
   # Keep only the Nadult rows
   nhat_POP <- nhat_POP[grep("^Nadult", rownames(nhat_POP)), ]
